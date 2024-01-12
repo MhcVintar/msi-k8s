@@ -18,7 +18,7 @@ const upload = multer();
 server.use(bodyParser.json());
 server.use(cookieParser());
 
-initialize Minio client
+// initialize Minio client
 var minioClient = new Minio.Client({
   endPoint: process.env.MINIO_URL,
   port: 9000,
@@ -40,17 +40,24 @@ const transporter = createTransport({
 });
 
 // routes
-process.on("SIGTERM", () => {
+process.on("SIGTERM", async () => {
   console.log("SIGTERM signal received: closing HTTP server");
+  await db.$disconnect();
+  console.log("Disconected from DB");
   server.close(() => {
     console.log("HTTP server closed");
     process.exit(0);
   });
 });
 
-server.get("/readyz", async (req: Request, res: Response) =>
-  res.status(200).json({ status: "ok" }),
-);
+server.get("/readyz", async (req: Request, res: Response) => {
+  try {
+    await db.$queryRaw`SELECT 1`;
+    res.status(200).json({ status: "ok" });
+  } catch (e) {
+    res.status(500).json({ status: "failed" });
+  }
+});
 
 server.get("/livez", async (req: Request, res: Response) =>
   res.status(200).json({ status: "ok" }),
