@@ -40,6 +40,14 @@ const transporter = createTransport({
 });
 
 // routes
+server.get("/readyz", (req: Request, res: Response) =>
+  res.status(200).json({ status: "ok" }),
+);
+
+server.get("/livez", (req: Request, res: Response) =>
+  res.status(200).json({ status: "ok" }),
+);
+
 server.post(
   "/auth/register",
   async (req: Request, res: Response, next: NextFunction) => {
@@ -258,7 +266,7 @@ server.get(
           take: itemsPerPage,
           orderBy: {
             createdAt: "desc",
-          }
+          },
         }),
         db.musicFile.count(),
       ]);
@@ -288,7 +296,7 @@ server.get(
           take: itemsPerPage,
           orderBy: {
             createdAt: "desc",
-          }
+          },
         }),
         db.musicFile.count({
           where: { userId: session.user.userId },
@@ -323,7 +331,7 @@ server.post(
         path,
         file.buffer,
         file.size,
-        async function(err) {
+        async function (err) {
           if (err) {
             return res.status(500).json({ error: "File upload failed" });
           }
@@ -366,10 +374,13 @@ server.get(
             return res.status(500).json({ error: "File download failed" });
           }
           res.setHeader("Content-Type", "audio/mpeg");
-          res.setHeader("Content-Disposition", `attachment; filename="${musicFile.title}"`);
+          res.setHeader(
+            "Content-Disposition",
+            `attachment; filename="${musicFile.title}"`,
+          );
           fileStream.pipe(res);
-        }
-      )
+        },
+      );
     } catch (err) {
       next(err);
     }
@@ -411,14 +422,18 @@ cron.schedule("* * * * *", async () => {
     for (const file of deleted) {
       const filePath = file.path;
 
-      minioClient.removeObject('music-files', filePath, async function(err: string) {
-        if (err) {
-          console.log(err);
-          throw new Error(err);
-        }
-      })
+      minioClient.removeObject(
+        "music-files",
+        filePath,
+        async function (err: string) {
+          if (err) {
+            console.log(err);
+            throw new Error(err);
+          }
+        },
+      );
     }
-  } catch (err) { }
+  } catch (err) {}
 });
 
 function createSession(res: Response, user: User) {
