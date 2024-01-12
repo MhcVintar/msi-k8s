@@ -1,0 +1,8 @@
+POST ${process.env.EXPRESS_URL}/auth/register
+Content-Type: application/json
+
+{
+  "email": "mhckhc.vintar@gmail.com",
+  "username": "mihav",
+  "password": "miha2003"
+}

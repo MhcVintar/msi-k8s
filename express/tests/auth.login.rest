@@ -1,0 +1,7 @@
+POST http://88.200.23.170:8080/auth/login
+Content-Type: application/json
+
+{
+  "emailOrUsername": "mihav",
+  "password": "12345678"
+}

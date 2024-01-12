@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose -f ../docker-compose.yml convert
+    kompose.version: 1.31.2 (a92241f79)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: express
+  name: express
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: express
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose -f ../docker-compose.yml convert
+        kompose.version: 1.31.2 (a92241f79)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/msi-k8s-default: "true"
+        io.kompose.service: express
+    spec:
+      containers:
+        - env:
+            - name: DATABASE_URL
+              value: postgresql://default_value:default_value@postgres:5432/musifydb
+            - name: EMAIL
+              value: musifymail@gmail.com
+            - name: EMAIL_PWD
+              value: ewsi lsqe shqf smcf
+            - name: JWT_SECRET
+              value: default_value
+            - name: MINIO_ROOT_PASSWORD
+              value: minioadmin
+            - name: MINIO_ROOT_USER
+              value: minioadmin
+            - name: MINIO_URL
+              value: minio
+            - name: NGINX_URL
+              value: http://localhost
+            - name: PORT
+              value: "3000"
+          image: express
+          name: express
+          ports:
+            - containerPort: 3000
+              hostPort: 3000
+              protocol: TCP
+          resources: {}
+      restartPolicy: Always
+status: {}

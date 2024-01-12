@@ -1,0 +1,214 @@
+.container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.navbar {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    justify-content: space-between;
+    background-color: black;
+}
+
+
+.logo-container {
+    margin-left: 50px;
+}
+
+.user-container {
+    margin-right: 50px;
+    font-size: 0.7em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.user-container h1 {
+    margin-right: 10px;
+}
+
+.user-container button {
+    font-size: 1.1em;
+}
+
+.content-container-home {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    background-color: white;
+    font-size: 0.9em;
+    color: black;
+}
+
+.left-section {
+    height: 100%;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+}
+
+.upload-container {
+    padding-left: 100px;
+    padding-top: 50px;
+    display: flex;
+    justify-content: center;
+}
+
+.upload-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    align-items: center;
+    width: fit-content;
+    background-color: rgb(12, 12, 12);
+    color: white;
+    border-radius: 20px;
+    padding: 20px 40px;
+}
+
+h1 {
+    font-weight: 400;
+}
+
+.select-file-container {
+    width: fit-content;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    background-color: #00D897;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+input[type=file] {
+    color: black;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    height: fit-content;
+}
+
+.upload-btn {
+    margin-top: 10px;
+}
+
+.my-music-container {
+    height: 100%;
+    padding-left: 100px;
+    padding-top: 25px;
+    padding-bottom: 40px;
+}
+
+.my-music-content {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.song-list-my {
+    width: 100%;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+}
+
+.song-list-my div {
+    border-radius: 10px;
+    color: black;
+    height: 50px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content:center;
+    align-items: center;
+    font-size: 1.1em;
+}
+
+.material-symbols-outlined {
+    border-radius: 8px;
+    padding: 3px;
+    color: black;
+}
+
+.download-icon {
+    background-color: #00D897;
+    margin-left: 10px;
+}
+
+.delete-icon {
+    background-color: rgb(254, 59, 59);
+    margin-left: 10px;
+}
+
+.right-section {
+    height: 100%;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+}
+
+.all-music-container {
+    height: 100%;
+    padding-right: 100px;
+    padding-top: 25px;
+    padding-bottom: 40px;
+}
+
+.all-music-content {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.song-list-all {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+}
+
+.song-list-all div {
+    border-radius: 10px;
+    color: black;
+    height: 50px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content:center;
+    align-items: center;
+    font-size: 1.1em;
+}
+
+.list-item p {
+    width: 50%;
+}
+
+.list-item div {
+    width: fit-content;
+    display: flex;
+    justify-content: left;
+}
+
+.file-type-error {
+    color: red;
+}
