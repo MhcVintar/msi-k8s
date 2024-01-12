@@ -12,13 +12,13 @@ import * as Minio from "minio";
 import cron from "node-cron";
 
 // initialize server
-const server = express();
-const port = Number(process.env.PORT);
+const server: any = express();
+const port = 3000;
 const upload = multer();
 server.use(bodyParser.json());
 server.use(cookieParser());
 
-// initialize Minio client
+initialize Minio client
 var minioClient = new Minio.Client({
   endPoint: process.env.MINIO_URL,
   port: 9000,
@@ -40,11 +40,19 @@ const transporter = createTransport({
 });
 
 // routes
-server.get("/readyz", (req: Request, res: Response) =>
+process.on("SIGTERM", () => {
+  console.log("SIGTERM signal received: closing HTTP server");
+  server.close(() => {
+    console.log("HTTP server closed");
+    process.exit(0);
+  });
+});
+
+server.get("/readyz", async (req: Request, res: Response) =>
   res.status(200).json({ status: "ok" }),
 );
 
-server.get("/livez", (req: Request, res: Response) =>
+server.get("/livez", async (req: Request, res: Response) =>
   res.status(200).json({ status: "ok" }),
 );
 
