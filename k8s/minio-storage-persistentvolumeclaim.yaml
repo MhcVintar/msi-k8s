@@ -3,9 +3,10 @@ kind: PersistentVolumeClaim
 metadata:
   creationTimestamp: null
   labels:
-    io.kompose.service: minio-storage
-  name: minio-storage
+    io.kompose.service: minio-storage-claim
+  name: minio-storage-claim
 spec:
+  storageClassName: minio-storage-class
   accessModes:
     - ReadWriteOnce
   resources:
