@@ -1,3 +1,48 @@
+# storage class
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: minio-storage-class
+provisioner: kubernetes.io/hostPath
+volumeBindingMode: WaitForFirstConsumer
+
+---
+
+# persistent volume
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: minio-storage-volume
+spec:
+  storageClassName: minio-storage-class
+  capacity:
+    storage: 2Gi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Delete
+  hostPath:
+    path: /data
+
+---
+
+# persistent volume claim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    com.musify.service: minio-storage-claim
+  name: minio-storage-claim
+spec:
+  storageClassName: minio-storage-class
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+status: {}
+
+---
+
 # deployment
 apiVersion: apps/v1
 kind: Deployment
@@ -18,21 +63,30 @@ spec:
         com.musify.service: minio
     spec:
       containers:
-        image: minio
-        name: minio
-        ports:
-          - containerPort: 9000
-            hostPort: 9000
-            protocol: TCP
-        volumeMounts:
-          - mountPath: /data
-            name: minio-storage
+        - env:
+            - name: MINIO_ROOT_PASSWORD
+              value: minioadmin
+            - name: MINIO_ROOT_USER
+              value: minioadmin
+          image: jakepel03/musify-minio:1.0
+          name: minio
+          ports:
+            - containerPort: 9000
+              hostPort: 9000
+              protocol: TCP
+          resources: {}
+          volumeMounts:
+            - mountPath: /data
+              name: minio-storage-volume
       restartPolicy: Always
       volumes:
-        - name: minio-storage
+        - name: minio-storage-volume
           persistentVolumeClaim:
-            claimName: minio-storage
+            claimName: minio-storage-claim
+status: {}
+
 ---
+
 # service
 apiVersion: v1
 kind: Service
@@ -47,17 +101,10 @@ spec:
       targetPort: 9000
   selector:
     com.musify.service: minio
----
-# persistent volume claim
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  labels:
-    io.kompose.service: minio-storage
-  name: minio-storage
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 100Mi
+
+
+
+
+
+
+
