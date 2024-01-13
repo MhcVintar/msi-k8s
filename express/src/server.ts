@@ -42,6 +42,7 @@ const transporter = createTransport({
 // routes
 process.on("SIGTERM", async () => {
   console.log("SIGTERM signal received: closing HTTP server");
+  minioClient.close();
   await db.$disconnect();
   console.log("Disconected from DB");
   server.close(() => {
@@ -52,7 +53,15 @@ process.on("SIGTERM", async () => {
 
 server.get("/readyz", async (req: Request, res: Response) => {
   try {
+    // Minio readiness probe
+    const response = await fetch(`${process.env.MINIO_URL}:9000/minio/health/ready`);
+    if (!response.ok) {
+      throw new Error();
+    }
+
+    // DB readiness probe
     await db.$queryRaw`SELECT 1`;
+
     res.status(200).json({ status: "ok" });
   } catch (e) {
     res.status(500).json({ status: "failed" });
