@@ -340,31 +340,53 @@ server.post(
       const userId = session.user.userId;
       const title = file.originalname;
       const path = userId + "/" + title;
+      const bucketName = 'music-files';
 
-      minioClient.putObject(
-        "music-files",
-        path,
-        file.buffer,
-        file.size,
-        async function (err) {
-          if (err) {
-            return res.status(500).json({ error: "File upload failed" });
-          }
-          try {
-            // create if not present in db, update if present
-            await db.musicFile.upsert({
-              where: { path: path },
-              create: { path, title, userId: session.user.userId },
-              update: { path, title, userId: session.user.userId },
-            });
-            return res
-              .status(200)
-              .json({ message: "File uploaded successfully" });
-          } catch (err) {
-            next(err);
-          }
-        },
-      );
+      // Check if the bucket exists, create it if not
+      minioClient.bucketExists(bucketName, async function (err, exists) {
+        if (err) {
+          return res.status(500).json({ error: "Error checking bucket existence" });
+        }
+
+        if (!exists) {
+          minioClient.makeBucket(bucketName, 'us-east-1', async function (err) {
+            if (err) {
+              return res.status(500).json({ error: "Error creating bucket" });
+            }
+            uploadObject();
+          });
+        } else {
+          uploadObject();
+        }
+      });
+
+      async function uploadObject() {
+        // Now proceed with uploading the object
+        minioClient.putObject(
+          bucketName,
+          path,
+          file.buffer,
+          file.size,
+          async function (err) {
+            if (err) {
+              return res.status(500).json({ error: "File upload failed" });
+            }
+            try {
+              // create if not present in db, update if present
+              await db.musicFile.upsert({
+                where: { path: path },
+                create: { path, title, userId: session.user.userId },
+                update: { path, title, userId: session.user.userId },
+              });
+              return res
+                .status(200)
+                .json({ message: "File uploaded successfully" });
+            } catch (err) {
+              next(err);
+            }
+          },
+        );
+      }
     } catch (err) {
       next(err);
     }
