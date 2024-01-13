@@ -1,9 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose -f ../docker-compose.yml convert
-    kompose.version: 1.31.2 (a92241f79)
   creationTimestamp: null
   labels:
     io.kompose.service: minio
@@ -17,9 +14,6 @@ spec:
     type: Recreate
   template:
     metadata:
-      annotations:
-        kompose.cmd: kompose -f ../docker-compose.yml convert
-        kompose.version: 1.31.2 (a92241f79)
       creationTimestamp: null
       labels:
         io.kompose.network/msi-k8s-default: "true"
@@ -31,7 +25,7 @@ spec:
               value: minioadmin
             - name: MINIO_ROOT_USER
               value: minioadmin
-          image: minio
+          image: jakepel03/musify-minio:1.0
           name: minio
           ports:
             - containerPort: 9000
@@ -40,10 +34,10 @@ spec:
           resources: {}
           volumeMounts:
             - mountPath: /data
-              name: minio-storage
+              name: minio-storage-volume
       restartPolicy: Always
       volumes:
-        - name: minio-storage
+        - name: minio-storage-volume
           persistentVolumeClaim:
-            claimName: minio-storage
+            claimName: minio-storage-claim
 status: {}
