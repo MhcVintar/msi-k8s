@@ -1,0 +1,63 @@
+# deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    com.musify.service: minio
+  name: minio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      com.musify.service: minio
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        com.musify.service: minio
+    spec:
+      containers:
+        image: minio
+        name: minio
+        ports:
+          - containerPort: 9000
+            hostPort: 9000
+            protocol: TCP
+        volumeMounts:
+          - mountPath: /data
+            name: minio-storage
+      restartPolicy: Always
+      volumes:
+        - name: minio-storage
+          persistentVolumeClaim:
+            claimName: minio-storage
+---
+# service
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    com.musify.service: minio
+  name: minio
+spec:
+  ports:
+    - name: "9000"
+      port: 9000
+      targetPort: 9000
+  selector:
+    com.musify.service: minio
+---
+# persistent volume claim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    io.kompose.service: minio-storage
+  name: minio-storage
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi

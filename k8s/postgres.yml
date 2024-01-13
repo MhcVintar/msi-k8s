@@ -1,0 +1,86 @@
+# deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    com.musify.service: postgres
+  name: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      com.musify.service: postgres
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        com.musify.service: postgres
+    spec:
+      containers:
+        image: mvintar/musify-database
+        name: postgres
+        envFrom:
+          - configMapRef:
+              name: postgres-configmap
+          - secretRef:
+              name: postgres-secret
+        ports:
+          - containerPort: 5432
+            hostPort: 5432
+            protocol: TCP
+        volumeMounts:
+          - mountPath: /var/lib/postgresql/data
+            name: postgres-data
+      restartPolicy: Always
+      volumes:
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: postgres-data
+---
+# service
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    com.musify.service: postgres
+  name: postgres
+spec:
+  ports:
+    - name: "5432"
+      port: 5432
+      targetPort: 5432
+  selector:
+    com.musify.service: postgres
+---
+# persistent volume claim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    com.musify.service: postgres-data
+  name: postgres-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+---
+# configmap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-configmap
+data:
+  POSTGRES_USER: pg_admin
+  POSTGRES_DB: musifydb
+---
+# secret
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-secret
+type: Opaque
+data:
+  POSTGRES_PASSWORD: cGdfYWRtaW4=

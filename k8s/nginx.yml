@@ -1,0 +1,40 @@
+# deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    com.musify.service: nginx
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      com.musify.service: nginx
+  template:
+    metadata:
+      labels:
+        com.musify.service: nginx
+    spec:
+      containers:
+        - image: mvintar/musify-frontend:latest
+          name: nginx
+          ports:
+            - containerPort: 80
+              hostPort: 80
+              protocol: TCP
+      restartPolicy: Always
+---
+# service
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    com.musify.service: nginx
+  name: nginx
+spec:
+  ports:
+    - name: "80"
+      port: 80
+      targetPort: 80
+  selector:
+    com.musify.service: nginx
