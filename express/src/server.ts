@@ -12,11 +12,11 @@ import * as Minio from "minio";
 import cron from "node-cron";
 
 // initialize server
-const server: any = express();
+const app = express();
 const port = 3000;
 const upload = multer();
-server.use(bodyParser.json());
-server.use(cookieParser());
+app.use(bodyParser.json());
+app.use(cookieParser());
 
 // initialize Minio client
 var minioClient = new Minio.Client({
@@ -42,7 +42,6 @@ const transporter = createTransport({
 // routes
 process.on("SIGTERM", async () => {
   console.log("SIGTERM signal received: closing HTTP server");
-  minioClient.close();
   await db.$disconnect();
   console.log("Disconected from DB");
   server.close(() => {
@@ -51,10 +50,12 @@ process.on("SIGTERM", async () => {
   });
 });
 
-server.get("/readyz", async (req: Request, res: Response) => {
+app.get("/readyz", async (req: Request, res: Response) => {
   try {
     // Minio readiness probe
-    const response = await fetch(`${process.env.MINIO_URL}:9000/minio/health/ready`);
+    const response = await fetch(
+      `${process.env.MINIO_URL}:9000/minio/health/ready`,
+    );
     if (!response.ok) {
       throw new Error();
     }
@@ -68,11 +69,11 @@ server.get("/readyz", async (req: Request, res: Response) => {
   }
 });
 
-server.get("/livez", async (req: Request, res: Response) =>
+app.get("/livez", async (req: Request, res: Response) =>
   res.status(200).json({ status: "ok" }),
 );
 
-server.post(
+app.post(
   "/auth/register",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -117,7 +118,7 @@ server.post(
   },
 );
 
-server.get(
+app.get(
   "/auth/confirm-account",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -143,7 +144,7 @@ server.get(
   },
 );
 
-server.post(
+app.post(
   "/auth/login",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -172,7 +173,7 @@ server.post(
   },
 );
 
-server.delete(
+app.delete(
   "/auth/logout",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -185,7 +186,7 @@ server.delete(
   },
 );
 
-server.post(
+app.post(
   "/auth/request-password-reset",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -220,7 +221,7 @@ server.post(
   },
 );
 
-server.post(
+app.post(
   "/auth/reset-password",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -248,7 +249,7 @@ server.post(
   },
 );
 
-server.delete(
+app.delete(
   "/auth/delete-account",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -265,7 +266,7 @@ server.delete(
   },
 );
 
-server.get(
+app.get(
   "/auth/check-session",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -278,7 +279,7 @@ server.get(
   },
 );
 
-server.get(
+app.get(
   "/file/allFiles/:page/:perPage",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -306,7 +307,7 @@ server.get(
   },
 );
 
-server.get(
+app.get(
   "/file/userFiles/:page/:perPage",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -338,7 +339,7 @@ server.get(
   },
 );
 
-server.post(
+app.post(
   "/file/upload",
   upload.single("file"),
   async (req: Request, res: Response, next: NextFunction) => {
@@ -349,16 +350,18 @@ server.post(
       const userId = session.user.userId;
       const title = file.originalname;
       const path = userId + "/" + title;
-      const bucketName = 'music-files';
+      const bucketName = "music-files";
 
       // Check if the bucket exists, create it if not
       minioClient.bucketExists(bucketName, async function (err, exists) {
         if (err) {
-          return res.status(500).json({ error: "Error checking bucket existence" });
+          return res
+            .status(500)
+            .json({ error: "Error checking bucket existence" });
         }
 
         if (!exists) {
-          minioClient.makeBucket(bucketName, 'us-east-1', async function (err) {
+          minioClient.makeBucket(bucketName, "us-east-1", async function (err) {
             if (err) {
               return res.status(500).json({ error: "Error creating bucket" });
             }
@@ -402,7 +405,7 @@ server.post(
   },
 );
 
-server.get(
+app.get(
   "/file/download/:mfId",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -433,7 +436,7 @@ server.get(
   },
 );
 
-server.delete(
+app.delete(
   "/file/delete/:mfId",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -520,13 +523,13 @@ function minutesToMs(minutes: number): number {
 }
 
 // global error handler
-server.use((err: any, req: Request, res: Response) => {
+app.use((err: any, req: Request, res: Response) => {
   err.statusCode = err.statusCode || 500;
   err.message = err.message || "Unknown error occurred";
   return res.status(err.statusCode).json({ error: err.message });
 });
 
 // start the server
-server.listen(port, () => {
+var server = app.listen(port, () => {
   console.log(`Server is running on http://${process.env.EXPRESS_URL}:${port}`);
 });
