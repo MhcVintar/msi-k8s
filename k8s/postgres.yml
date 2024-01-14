@@ -1,5 +1,6 @@
 # storage class
 apiVersion: storage.k8s.io/v1
+kind: StorageClass
 metadata:
   name: postgres-storage-class
 provisioner: kubernetes.io/hostPath
@@ -60,13 +61,11 @@ spec:
       containers:
         - image: jakepel03/musify-db:1.0
           name: postgres
-          env:
-            - name: POSTGRES_DB
-              value: musifydb
-            - name: POSTGRES_USER
-              value: postgresadmin
-            - name: POSTGRES_PASSWORD
-              value: postgresadmin
+          envFrom:
+            - configMapRef:
+                name: musify-configmap
+            - secretRef:
+                name: musify-secrets
           ports:
             - containerPort: 5432
               hostPort: 5432

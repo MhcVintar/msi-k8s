@@ -10,22 +10,25 @@ spec:
   selector:
     matchLabels:
       com.musify.service: express
-  strategy: {}
   template:
     metadata:
       labels:
         com.musify.service: express
     spec:
       containers:
-        image: express
-        name: express
-        ports:
-          - containerPort: 3000
-            hostPort: 3000
-            protocol: TCP
-        resources: {}
+        - image: express
+          name: express
+          envFrom:
+            - configMapRef:
+                name: musify-configmap
+            - secretRef:
+                name: musify-secrets
+          ports:
+            - containerPort: 3000
+              hostPort: 3000
+              protocol: TCP
       restartPolicy: Always
-status: {}
+
 ---
 # service
 apiVersion: v1
@@ -41,11 +44,3 @@ spec:
       targetPort: 3000
   selector:
     com.musify.service: express
----
-# configmap
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: express-configmap
-data:
-  EMAIL: musifymail@gmail.com

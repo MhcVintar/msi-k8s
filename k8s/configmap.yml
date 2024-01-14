@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: musify-configmap
+data:
+  POSTGRES_DB: musifydb
+  POSTGRES_USER: postgresadmin
+  NGINX_URL: http://localhost
+  EMAIL: musifymail@gmail.com
+  MINIO_URL: minio
+  MINIO_ROOT_USER: minioadmin
