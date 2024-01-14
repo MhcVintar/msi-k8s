@@ -15,7 +15,7 @@ metadata:
 spec:
   storageClassName: musify-storage-class
   capacity:
-    storage: 2Gi
+    storage: 5Gi
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Delete
