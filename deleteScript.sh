@@ -16,8 +16,10 @@ kubectl delete deployments express
 kubectl delete ingress musify-ingress
 
 # Delete PVs and PVCs
-kubectl delete pvc --all
-kubectl delete pv --all
+kubectl delete pvc minio-storage-claim
+kubectl delete pvc postgres-storage-claim
+kubectl delete pv minio-storage-volume
+kubectl delete pv postgres-storage-volume
 
 # Delete Storage Classes
 kubectl delete sc --all
