@@ -12,6 +12,10 @@ kubectl delete deployments postgres
 kubectl delete deployments nginx
 kubectl delete deployments express
 
+# Delete Secrets and ConfigMap
+kubectl delete secret musify-secrets
+kubectl delete configmap musify-configmap
+
 # Delete Ingress
 kubectl delete ingress musify-ingress
 
