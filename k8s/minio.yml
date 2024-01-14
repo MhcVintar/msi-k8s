@@ -8,7 +8,7 @@ metadata:
 spec:
   storageClassName: musify-storage-class
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 2Gi
