@@ -7,7 +7,6 @@ provisioner: kubernetes.io/hostPath
 volumeBindingMode: WaitForFirstConsumer
 
 ---
-
 # persistent volume
 apiVersion: v1
 kind: PersistentVolume
@@ -18,13 +17,12 @@ spec:
   capacity:
     storage: 2Gi
   accessModes:
-  - ReadWriteOnce
+    - ReadWriteOnce
   persistentVolumeReclaimPolicy: Delete
   hostPath:
     path: /data
 
 ---
-
 # persistent volume claim
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -42,7 +40,6 @@ spec:
 status: {}
 
 ---
-
 # deployment
 apiVersion: apps/v1
 kind: Deployment
@@ -86,7 +83,6 @@ spec:
 status: {}
 
 ---
-
 # service
 apiVersion: v1
 kind: Service
@@ -101,10 +97,3 @@ spec:
       targetPort: 9000
   selector:
     com.musify.service: minio
-
-
-
-
-
-
-

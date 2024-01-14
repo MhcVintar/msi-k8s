@@ -1,3 +1,43 @@
+# storage class
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: postgres-storage-class
+provisioner: kubernetes.io/hostPath
+volumeBindingMode: WaitForFirstConsumer
+
+---
+# persistent volume
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-storage-volume
+spec:
+  storageClassName: postgres-storage-class
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Delete
+  hostPath:
+    path: /var/lib/postgresql/data
+
+---
+# persistent volume claim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    com.musify.service: postgres-storage-claim
+  name: postgres-storage-claim
+spec:
+  storageClassName: postgres-storage-class
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+---
 # deployment
 apiVersion: apps/v1
 kind: Deployment
@@ -18,25 +58,28 @@ spec:
         com.musify.service: postgres
     spec:
       containers:
-        image: mvintar/musify-database
-        name: postgres
-        envFrom:
-          - configMapRef:
-              name: postgres-configmap
-          - secretRef:
-              name: postgres-secret
-        ports:
-          - containerPort: 5432
-            hostPort: 5432
-            protocol: TCP
-        volumeMounts:
-          - mountPath: /var/lib/postgresql/data
-            name: postgres-data
+        - image: jakepel03/musify-db:1.0
+          name: postgres
+          env:
+            - name: POSTGRES_DB
+              value: musifydb
+            - name: POSTGRES_USER
+              value: postgresadmin
+            - name: POSTGRES_PASSWORD
+              value: postgresadmin
+          ports:
+            - containerPort: 5432
+              hostPort: 5432
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgres-storage-volume
       restartPolicy: Always
       volumes:
-        - name: postgres-data
+        - name: postgres-storage-volume
           persistentVolumeClaim:
-            claimName: postgres-data
+            claimName: postgres-storage-claim
+
 ---
 # service
 apiVersion: v1
@@ -52,35 +95,3 @@ spec:
       targetPort: 5432
   selector:
     com.musify.service: postgres
----
-# persistent volume claim
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  labels:
-    com.musify.service: postgres-data
-  name: postgres-data
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 100Mi
----
-# configmap
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: postgres-configmap
-data:
-  POSTGRES_USER: pg_admin
-  POSTGRES_DB: musifydb
----
-# secret
-apiVersion: v1
-kind: Secret
-metadata:
-  name: postgres-secret
-type: Opaque
-data:
-  POSTGRES_PASSWORD: cGdfYWRtaW4=
