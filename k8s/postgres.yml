@@ -1,3 +1,28 @@
+# storage class
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: postgres-storage-class
+provisioner: kubernetes.io/hostPath
+volumeBindingMode: WaitForFirstConsumer
+
+---
+# persistent volume
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-storage-volume
+spec:
+  storageClassName: postgres-storage-class
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Delete
+  hostPath:
+    path: /musify/volume/postgres
+
+---
 # persistent volume claim
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -6,9 +31,9 @@ metadata:
     com.musify.service: postgres-storage-claim
   name: postgres-storage-claim
 spec:
-  storageClassName: musify-storage-class
+  storageClassName: postgres-storage-class
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 1Gi
@@ -47,10 +72,10 @@ spec:
               protocol: TCP
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
-              name: musify-storage-volume
+              name: postgres-storage-volume
       restartPolicy: Always
       volumes:
-        - name: musify-storage-volume
+        - name: postgres-storage-volume
           persistentVolumeClaim:
             claimName: postgres-storage-claim
 
