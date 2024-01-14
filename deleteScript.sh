@@ -22,4 +22,5 @@ kubectl delete pv minio-storage-volume
 kubectl delete pv postgres-storage-volume
 
 # Delete Storage Classes
-kubectl delete sc --all
+kubectl delete sc minio-storage-class
+kubectl delete sc postgres-storage-class
