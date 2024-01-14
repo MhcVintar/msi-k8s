@@ -1,0 +1,23 @@
+# storage class
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: musify-storage-class
+provisioner: kubernetes.io/hostPath
+volumeBindingMode: WaitForFirstConsumer
+
+---
+# persistent volume
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: musify-storage-volume
+spec:
+  storageClassName: musify-storage-class
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Delete
+  hostPath:
+    path: /musify/volume
