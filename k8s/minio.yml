@@ -68,8 +68,6 @@ spec:
                 name: musify-secrets
           ports:
             - containerPort: 9000
-              hostPort: 9000
-              protocol: TCP
           volumeMounts:
             - mountPath: /data
               name: minio-storage-volume
