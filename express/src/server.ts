@@ -61,11 +61,7 @@ app.get("/readyz", async (req: Request, res: Response) => {
     }
 
     // DB readiness probe
-    const res = await db.$queryRaw`SELECT 1;`;
-    console.log(res);
-
-    const res2 = await db.user.findMany();
-    console.log(res2);
+    await db.$queryRaw`SELECT 1;`;
 
     res.status(200).json({ status: "ok" });
   } catch (e) {
