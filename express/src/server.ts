@@ -57,11 +57,15 @@ app.get("/readyz", async (req: Request, res: Response) => {
       `${process.env.MINIO_URL}:9000/minio/health/ready`,
     );
     if (!response.ok) {
+      console.log("minio error");
+      console.log(response);
       throw new Error();
     }
 
+    console.log("testing database");
     // DB readiness probe
-    await db.$queryRaw`SELECT 1;`;
+    const data = await db.$queryRaw`SELECT 1;`;
+    console.log(data);
 
     res.status(200).json({ status: "ok" });
   } catch (e) {
