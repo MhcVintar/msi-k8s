@@ -11,6 +11,7 @@ import WelcomePage from "./pages/WelcomePage.tsx";
 import PopupProvider from "./components/context/Popup.tsx";
 import ProtectedRoute from "./components/wrappers/ProtectedRoute.tsx";
 
+// testing CI
 function App() {
   return (
     <Router>
