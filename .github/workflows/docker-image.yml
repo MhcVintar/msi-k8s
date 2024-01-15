@@ -1,0 +1,71 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: ["master"]
+    paths: ["react/**"]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: ["master"]
+    paths: ["react/**"]
+
+env:
+  IMAGE_TAG: ${{ secrets.DOCKERHUB_USERNAME }}/musify-frontend:latest
+
+jobs:
+  build:
+    name: Docker build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build Docker image
+        run: docker build -f docker/Dockerfile.nginx --tag "${IMAGE_TAG}" .
+
+      - name: Save Docker image
+        run: docker save --output image.tar "${IMAGE_TAG}"
+      - name: Upload Docker image
+        uses: actions/upload-artifact@v3
+        with:
+          name: docker-image
+          path: image.tar
+
+  push:
+    name: Docker push
+    runs-on: ubuntu-latest
+
+    needs: build
+
+    steps:
+      - name: Download Docker image
+        uses: actions/download-artifact@v3
+        with:
+          name: docker-image
+      - name: Load Docker image
+        run: docker load --input image.tar
+
+      - name: Publish Docker image
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_PASS: ${{ secrets.DOCKERHUB_PASS }}
+        run: |
+          echo "${DOCKERHUB_PASS}" | docker login --username "${DOCKERHUB_USERNAME}" --password-stdin
+          docker push "${IMAGE_TAG}"
+  
+  create_release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: push
+    if: startsWith(github.event.ref, 'refs/tags/')
+    steps:
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
