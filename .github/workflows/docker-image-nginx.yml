@@ -5,7 +5,7 @@ on:
     branches: ["master"]
     paths: ["react/**"]
     tags:
-      - 'v*'
+      - "v*"
   pull_request:
     branches: ["master"]
     paths: ["react/**"]
@@ -42,7 +42,7 @@ jobs:
       - name: Download Docker image
         uses: actions/download-artifact@v3
         with:
-          name: docker-image
+          name: docker-image-nginx
       - name: Load Docker image
         run: docker load --input image.tar
 
@@ -53,7 +53,7 @@ jobs:
         run: |
           echo "${DOCKERHUB_PASS}" | docker login --username "${DOCKERHUB_USERNAME}" --password-stdin
           docker push "${IMAGE_TAG}"
-  
+
   create_release:
     name: Create GitHub Release
     runs-on: ubuntu-latest
@@ -68,4 +68,3 @@ jobs:
           release_name: Release ${{ github.ref }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
