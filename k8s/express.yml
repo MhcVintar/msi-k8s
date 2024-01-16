@@ -16,7 +16,7 @@ spec:
         com.musify.service: express
     spec:
       containers:
-        - image: jakepel03/musify-express:1.0
+        - image: mvintar/musify-express:latest
           name: express
           envFrom:
             - configMapRef:

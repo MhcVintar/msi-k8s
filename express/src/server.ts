@@ -51,7 +51,12 @@ process.on("SIGTERM", async () => {
 });
 
 app.get("/readyz", async (req: Request, res: Response) => {
-  res.status(200).json({ status: "ok" });
+  try {
+    await db.$queryRaw`SELECT 1;`;
+    res.status(200).json({ status: "ok" });
+  } catch (e) {
+    res.status(500).json({ status: "failed" });
+  }
 });
 
 app.get("/livez", async (req: Request, res: Response) => {
