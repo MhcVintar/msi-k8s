@@ -51,33 +51,12 @@ process.on("SIGTERM", async () => {
 });
 
 app.get("/readyz", async (req: Request, res: Response) => {
-  console.log("before try catch");
-  try {
-    // Minio readiness probe
-    console.log("we made it into try catch");
-    const response = await fetch(
-      `${process.env.MINIO_URL}:9000/minio/health/ready`,
-    );
-    console.log("we made it past response");
-    console.log(response);
-    if (!response.ok) {
-      throw new Error();
-    }
-    console.log("made it to database");
-    // DB readiness probe
-    const data = await db.$queryRaw`SELECT 1;`;
-    console.log(data);
-
-    res.status(200).json({ status: "ok" });
-  } catch (e) {
-    console.log(e);
-    res.status(500).json({ status: "failed" });
-  }
+  res.status(200).json({ status: "ok" });
 });
 
-app.get("/livez", async (req: Request, res: Response) =>
-  res.status(200).json({ status: "ok" }),
-);
+app.get("/livez", async (req: Request, res: Response) => {
+  res.status(200).json({ status: "ok" });
+});
 
 app.post(
   "/auth/register",
