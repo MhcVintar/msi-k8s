@@ -3,56 +3,23 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: minio-storage-class
-provisioner: kubernetes.io/hostPath
+provisioner: microk8s.io/hostpath
 volumeBindingMode: WaitForFirstConsumer
 
 ---
-# persistent volume
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: minio-storage-volume
-spec:
-  storageClassName: minio-storage-class
-  capacity:
-    storage: 2Gi
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Delete
-  hostPath:
-    path: /musify/volume/minio
-
----
-# persistent volume claim
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  labels:
-    com.musify.service: minio-storage-claim
-  name: minio-storage-claim
-spec:
-  storageClassName: minio-storage-class
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 2Gi
-
----
-# deployment
+# statefulset
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   labels:
     com.musify.service: minio
   name: minio
 spec:
+  serviceName: "minio"
   replicas: 1
   selector:
     matchLabels:
       com.musify.service: minio
-  strategy:
-    type: Recreate
   template:
     metadata:
       labels:
@@ -87,11 +54,16 @@ spec:
             periodSeconds: 20
             timeoutSeconds: 5
             failureThreshold: 3
-      restartPolicy: Always
-      volumes:
-        - name: minio-storage-volume
-          persistentVolumeClaim:
-            claimName: minio-storage-claim
+  volumeClaimTemplates:
+    - metadata:
+        name: minio-storage-volume
+      spec:
+        storageClassName: minio-storage-class
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
 
 ---
 # service
@@ -106,6 +78,5 @@ spec:
     - name: "9000"
       port: 9000
       targetPort: 9000
-  type: ClusterIP
   selector:
     com.musify.service: minio
