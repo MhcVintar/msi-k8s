@@ -32,9 +32,44 @@ Our goal is to make this application HA (highly available). Nginx and Express ar
 
 
 ### 5. Continuous Integration/Continuous Deployment (CI/CD)
-Commit of changes in `express` or `react` directory triggers a CI/CD pipeline, established to automate the Docker image build and push on registry.
+Commit of changes in `express` directory triggers a CI/CD pipeline, established to automate the Docker image build and push on registry.
 
 ### 6. Readiness and Liveness Probes
 
-Our Kubernetes deployment includes configured readiness and liveness probes, designed to enhance the reliability and stability of the application.
-[RollingUpdate.webm](https://github.com/MhcVintar/msi-k8s/assets/69330734/d1753c34-05a0-47ac-88d5-8a60e6b302bf)
+Our Kubernetes deployment includes configured readiness and liveness probes, designed to enhance the reliability and stability of the application. Configurations are specific for each service based on the complexity, usual startup times and tests we have done (e.g. Nginx has shorter initial delay than Minio since Minio usually requires more time to become operational).
+
+## Getting Started
+Before proceeding with the steps below, ensure that you have a running Kubernetes cluster, and `kubectl` is configured to connect to the cluster.
+
+1. Clone the repository:
+
+    ```bash
+    git clone git@github.com:MhcVintar/msi-k8s.git
+    ```
+
+2. Move to the root directory of the repository:
+
+    ```bash
+    cd msi-k8s
+    ```
+
+3. You can now see `startScript.sh` and `deleteScript.sh` in current directory. First one handles the deployment of all required objects (services, statefulsets, deployments, etc.) and the second one completely deletes everything related to our project from your computer (deletes PVCs, storageclasses, deployments, services, etc.).
+
+  Run the following command to automate the app build process:
+  ```bash
+  ./startScript.sh
+  ```
+
+4. After script successfully executes, you can check current cluster info with:
+  ```bash
+  kubectl get all
+  ```
+
+  You should see that multiple containers are setting up (Pending -> ContainerCreating -> Running). After a while all of them are in Ready state.
+
+5. You can now access the website on http://localhost
+
+6. If you want to delete everything K8S related with our project use: 
+  ```bash
+  ./deleteScript.sh
+  ```
