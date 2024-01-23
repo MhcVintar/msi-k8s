@@ -37,3 +37,4 @@ Commit of changes in `express` or `react` directory triggers a CI/CD pipeline, e
 ### 6. Readiness and Liveness Probes
 
 Our Kubernetes deployment includes configured readiness and liveness probes, designed to enhance the reliability and stability of the application.
+[RollingUpdate.webm](https://github.com/MhcVintar/msi-k8s/assets/69330734/d1753c34-05a0-47ac-88d5-8a60e6b302bf)
