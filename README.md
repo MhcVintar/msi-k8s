@@ -1,80 +1,39 @@
-# MSI Class Project - Web Application Deployment Automation with Docker
+# MSI Class Project - Web Application Deployment Automation with Kubernetes
 
 ## Overview
-This project focuses on automating the deployment of a web application for music sharing using Docker. It involves creating a the full-stack application that allows users to register, sign in, upload and download music, as well as delete their uploaded files. The primary goal is to establish a platform for efficient and rapid exchange of audio files. Note that the website is not mobile-friendly yet.
+This project focuses on automating the deployment of a web application for music sharing using Kubernetes. The goal is to create a full-stack application that allows users to register, sign in, upload and download music, as well as delete their uploaded files. The primary aim is to establish a platform for efficient and rapid exchange of audio files. Note that the website is not mobile-friendly yet.
 
 ## Team Members
 - Jaka Pelko
 - Miha Vintar
 
-## Project Components
+## Project Components and key features
 
-The project consists of the following key components:
+### 1. Kubernetes Deployment Configuration
 
-1. **Docker Compose Configuration:**
-   - The `docker-compose.yml` file defines the services and their interactions.
-   - There are 5 different services implemented.
+This repository includes a set of Kubernetes manifests located in the `k8s` directory. These manifests define the deployment, services, and other resources required for the deployment.
 
-2. **Docker Volumes:**
-   - Volumes are used for Minio file storage and database storage, ensuring data persistence between container restarts.
+- Nginx Deployment and Service Manifest (`nginx.yml`)
+- Express Deployment and Service Manifest (`express.yml`)
+- Minio Deployment, Service, PV and PVC Manifest (`minio.yml`)
+- Postgres Deployment, Service, PV, PVC Manifest (`postgres.yml`)
+- Ingress Controller Configuration Manifest (`ingress.yml`)
+- ConfigMap Manifest (`configmap.yml`)
+- Secrets Manifest (`secret.yml`)
 
-3. **Multi-stage Builds:**
-   - Nginx, express and postgres are compiled by using multistage-builds. The final stage's image is optimized and minimalized by using distroless, alpine images.
+### 2. Persistent Volumes and Persistent Volume Claims
+Persistent Volumes and Claims are used for Minio file storage and database storage, ensuring data persistence between pod restarts.
 
-4. **Continuous Integration/Continuous Deployment (CI/CD):**
-   - A CI/CD pipeline is established to automate the build of nginx image at commit.
+### 3. Ingress Controller
+The Ingress Controller acts as a gateway for managing external traffic.
 
-## Getting Started
-Before proceeding with the steps below, ensure that you have Docker installed on your system as it is a requirement for this project.
-
-
-1. Clone the repository:
-
-    ```bash
-    git clone git@github.com:jakepel03/msi-docker.git
-    ```
-
-2. Move to the root directory of the repository:
-
-    ```bash
-    cd msi-docker
-    ```
-    
-   ![Screenshot from 2024-01-01 20-00-57](https://github.com/jakepel03/msi-docker/assets/69330734/907ac77a-26f9-4c6b-aa37-5fd662760573)
+### 4. High Availability Deployment
+Our goal is to make this application HA (highly available). Nginx and Express are configured to have three instances. This design enhances the reliability of our application, minimizing downtime and offering a robust architecture for uninterrupted user access.
 
 
-3. (Optional) You can create an `.env` file in the root folder of the cloned repository and specify the following environmental variables:
-    
-- `POSTGRES_USER`
-- `POSTGRES_PASSWORD`
-- `MINIO_ROOT_USER`
-- `MINIO_ROOT_PASSWORD`
-- `JWT_SECRET`
+### 5. Continuous Integration/Continuous Deployment (CI/CD)
+Commit of changes in `express` or `react` directory triggers a CI/CD pipeline, established to automate the Docker image build and push on registry.
 
-   If `.env` file is not present, default values will be used for those environmental variables.
-  
-4. Run the following command to launch the VM:
+### 6. Readiness and Liveness Probes
 
-    ```bash
-    docker compose up -d
-    ```
-   ![Screenshot from 2024-01-01 20-04-05](https://github.com/jakepel03/msi-docker/assets/69330734/2e8a10a5-d2b2-410f-bf3b-326d7615f0b2)
-
-    Wait until containers are started.
-
-
-5. Once the containers are running, you can access the website on http://localhost
-
-
-   ![Screenshot from 2024-01-01 20-04-31](https://github.com/jakepel03/msi-docker/assets/69330734/4d50b13a-0f59-4f80-a940-aa04352bf65e)
-   
-   ![Screenshot from 2024-01-01 20-05-11](https://github.com/jakepel03/msi-docker/assets/69330734/08db1a05-2457-45b1-a3de-56e591f24b65)
-   
-6. If you want to stop and remove the containers, run:
-
-    ```bash
-    docker compose down
-    ```
-    (add `-v` tag if you also want to remove volumes)
-   ![image](https://github.com/jakepel03/msi-docker/assets/69330734/dff33a29-a195-41c1-a763-2b541dff5120)
-
+Our Kubernetes deployment includes configured readiness and liveness probes, designed to enhance the reliability and stability of the application.
