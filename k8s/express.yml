@@ -29,13 +29,13 @@ spec:
             httpGet:
               path: /readyz
               port: 3000
-            initialDelaySeconds: 5
+            initialDelaySeconds: 20
             periodSeconds: 5
           livenessProbe:
             httpGet:
               path: /livez
               port: 3000
-            initialDelaySeconds: 10
+            initialDelaySeconds: 5
             periodSeconds: 5
             timeoutSeconds: 5
       restartPolicy: Always
