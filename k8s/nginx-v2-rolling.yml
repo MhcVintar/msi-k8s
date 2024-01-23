@@ -10,13 +10,18 @@ spec:
   selector:
     matchLabels:
       com.musify.service: nginx
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   template:
     metadata:
       labels:
         com.musify.service: nginx
     spec:
       containers:
-        - image: jakepel03/musify-nginx:1.0
+        - iamge: jakepel03/musify-nginx:2.0
           name: nginx
           ports:
             - containerPort: 80
@@ -34,19 +39,3 @@ spec:
             periodSeconds: 5
             timeoutSeconds: 5
       restartPolicy: Always
-
----
-# service
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    com.musify.service: nginx
-  name: nginx
-spec:
-  ports:
-    - name: "8080"
-      port: 8080
-      targetPort: 80
-  selector:
-    com.musify.service: nginx
