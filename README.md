@@ -56,20 +56,20 @@ Before proceeding with the steps below, ensure that you have a running Kubernete
 3. You can now see `startScript.sh` and `deleteScript.sh` in current directory. First one handles the deployment of all required objects (services, statefulsets, deployments, etc.) and the second one completely deletes everything related to our project from your computer (deletes PVCs, storageclasses, deployments, services, etc.).
 
   Run the following command to automate the app build process:
-  ```bash
-  ./startScript.sh
-  ```
+    ```bash
+    ./startScript.sh
+    ```
 
 4. After script successfully executes, you can check current cluster info with:
-  ```bash
-  kubectl get all
-  ```
+    ```bash
+    kubectl get all
+    ```
 
   You should see that multiple containers are setting up (Pending -> ContainerCreating -> Running). After a while all of them are in Ready state.
 
 5. You can now access the website on http://localhost
 
 6. If you want to delete everything K8S related with our project use: 
-  ```bash
-  ./deleteScript.sh
-  ```
+    ```bash
+    ./deleteScript.sh
+    ```
