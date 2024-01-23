@@ -113,5 +113,6 @@ spec:
     - name: "5432"
       port: 5432
       targetPort: 5432
+  type: ClusterIP
   selector:
     com.musify.service: postgres
