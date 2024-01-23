@@ -75,6 +75,12 @@ Before proceeding with the steps below, ensure that you have a running Kubernete
     ./deleteScript.sh
     ```
 
-## Visual representation
+## Visual representation (deployment and deletion)
 
-[![asciicast](https://asciinema.org/a/1ilFV7A0N8mPsc03T6ua8hCZx.svg)](https://asciinema.org/a/1ilFV7A0N8mPsc03T6ua8hCZx)
+![k8s](https://github.com/MhcVintar/msi-k8s/assets/69330734/81e9c128-ae40-41a3-97f0-407b77e53407)
+
+After running `startScript.sh` and accessing http://localhost, you should see Musify website:
+
+![293603238-08db1a05-2457-45b1-a3de-56e591f24b65](https://github.com/MhcVintar/msi-k8s/assets/69330734/f466c438-5995-41fc-977c-3e0ca4fe175a)
+
+
