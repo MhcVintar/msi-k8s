@@ -15,8 +15,8 @@ This repository includes a set of Kubernetes manifests located in the `k8s` dire
 
 - Nginx Deployment and Service Manifest (`nginx.yml`)
 - Express Deployment and Service Manifest (`express.yml`)
-- Minio Deployment, Service, PV and PVC Manifest (`minio.yml`)
-- Postgres Deployment, Service, PV, PVC Manifest (`postgres.yml`)
+- Minio StatefulSet, Service and StorageClass Manifest (`minio.yml`)
+- Postgres StatefulSet, Service abd StorageClass Manifest (`postgres.yml`)
 - Ingress Controller Configuration Manifest (`ingress.yml`)
 - ConfigMap Manifest (`configmap.yml`)
 - Secrets Manifest (`secret.yml`)
