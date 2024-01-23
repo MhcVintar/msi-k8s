@@ -61,6 +61,7 @@ Before proceeding with the steps below, ensure that you have a running Kubernete
     ```
 
 4. After script successfully executes, you can check current cluster info with:
+
     ```bash
     kubectl get all
     ```
@@ -73,3 +74,7 @@ Before proceeding with the steps below, ensure that you have a running Kubernete
     ```bash
     ./deleteScript.sh
     ```
+
+## Visual representation
+
+![k8s](https://github.com/MhcVintar/msi-k8s/assets/69330734/1b73347d-55ac-4c37-83e7-6d00c834c98a)
