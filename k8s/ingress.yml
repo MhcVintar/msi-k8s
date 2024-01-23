@@ -14,6 +14,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: nginx
+                name: nginx # change this to nging-v2 for blue green
                 port:
                   number: 80
