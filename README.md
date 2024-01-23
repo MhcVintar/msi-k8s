@@ -83,4 +83,13 @@ After running `startScript.sh` and accessing http://localhost, you should see Mu
 
 ![293603238-08db1a05-2457-45b1-a3de-56e591f24b65](https://github.com/MhcVintar/msi-k8s/assets/69330734/f466c438-5995-41fc-977c-3e0ca4fe175a)
 
+## Zero-Downtime upgrades
+We have also included a basic example of Rolling update and Blue-green deployment for Nginx service (version 1.0 to version 2.0).
 
+### Rolling Update
+
+[RollingUpdate.webm](https://github.com/MhcVintar/msi-k8s/assets/69330734/1abc4b69-cbb3-4612-ab70-793e83f863d7)
+
+### Blue-green Deployment
+
+[BlueGreenDeployment.webm](https://github.com/MhcVintar/msi-k8s/assets/69330734/24e00af3-d673-4827-907e-d538dada42f6)
