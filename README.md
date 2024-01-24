@@ -56,6 +56,7 @@ Before proceeding with the steps below, ensure that you have a running Kubernete
 3. You can now see `startScript.sh` and `deleteScript.sh` in current directory. First one handles the deployment of all required objects (services, statefulsets, deployments, etc.) and the second one completely deletes everything related to our project from your computer (deletes PVCs, storageclasses, deployments, services, etc.).
 
   Run the following command to automate the app build process:
+
     ```bash
     ./startScript.sh
     ```
